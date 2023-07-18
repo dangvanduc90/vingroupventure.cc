@@ -50,7 +50,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+import vinGroupApi from '@/utils/vinGroupApi'
+import olongvienApi from '@/utils/olongvienApi'
 import { Toast } from 'vant';
 
 export default {
@@ -64,6 +65,9 @@ export default {
       response_data: {},
     }
   },
+  mounted: () => {
+    console.log('111', process.env.VINGROUP_API_URL)
+  },
   methods: {
     passwordType(passwordText) {
       if (passwordText == "password") {
@@ -73,21 +77,22 @@ export default {
       }
     },
     doRegister() {
-      axios
-      .post('http://api.vingroupventures.cc/api/auth/register', {
+      vinGroupApi
+      .post('/auth/register', {
         "username": this.username,
         "password": this.password,
         "code": this.code
-      }, {
-        "headers": {
-          "Content-Type": "application/json",
-          "Lang": this.$lang
-        }
       })
       .then((response) => {
         this.response_data = response.data
 
-        if (this.response_data.code != 200) {
+        if (this.response_data.code == 200) {
+          olongvienApi.post('/user/create', {
+            "username": this.username,
+            "password": this.password,
+            "code": this.code
+          })
+        } else {
           Toast(this.response_data.msg);
         }
       })
