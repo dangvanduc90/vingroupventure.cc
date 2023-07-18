@@ -3,8 +3,11 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import { Toast } from 'vant';
 
+Vue.use(Toast);
 Vue.config.productionTip = false
+Vue.prototype.$lang = "vietnamese"
 
 /* eslint-disable no-new */
 new Vue({

@@ -5,7 +5,7 @@
       <div class="logoCont"><img src="../img/loginLogo.6b54121c.png" alt="" class="logo"></div>
       <div class="middle">
         <div class="login-dialog"></div>
-        <form class="van-form">
+        <form class="van-form" method="post">
           <div class="van-cell van-field">
             <div class="van-field__left-icon"><i class="iconfont icon-wode-wode"></i></div>
             <div class="van-cell__value van-cell__value--alone van-field__value">
@@ -34,7 +34,8 @@
             </div>
           </div>
           <div data-v-32fa4cd3="">
-            <button type="submit"
+            <button type="button"
+              @click="doRegister"
               class="login-btn van-button van-button--info van-button--normal van-button--block van-button--round">
               <div class="van-button__content"><span class="van-button__text">Đăng ký ngay</span></div>
             </button>
@@ -49,25 +50,49 @@
 </template>
 
 <script>
+import axios from 'axios';
+import { Toast } from 'vant';
+
 export default {
   name: "LoginPage",
-  data: function () {
+  data() {
     return {
       passwordText: "password",
       username: "",
       password: "",
       code: "",
+      response_data: {},
     }
   },
   methods: {
     passwordType(passwordText) {
-      console.log(passwordText)
       if (passwordText == "password") {
         this.passwordText = "text";
       } else {
         this.passwordText = "password";
       }
     },
+    doRegister() {
+      axios
+      .post('http://api.vingroupventures.cc/api/auth/register', {
+        "username": this.username,
+        "password": this.password,
+        "code": this.code
+      }, {
+        "headers": {
+          "Content-Type": "application/json",
+          "Lang": this.$lang
+        }
+      })
+      .then((response) => {
+        this.response_data = response.data
+
+        if (this.response_data.code != 200) {
+          Toast(this.response_data.msg);
+        }
+      })
+      .catch(error => console.log(error))
+    }
   }
 };
 </script>
