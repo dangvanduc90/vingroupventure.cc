@@ -27,4 +27,4 @@ jobs:
             git reset --hard origin/${{ github.head_ref || github.ref_name }}
             git pull origin ${{ github.head_ref || github.ref_name }}
             npm install --force
-            pm2 start ecosystem.config.js --env development
+            pm2 start ecosystem.config.js

@@ -126,7 +126,9 @@ export default {
             "username": this.username,
             "password": this.password,
           })
-          window.location.href = "http://vingroupventures.cc/#/login";
+          .then({})
+          .catch(error => console.log(error))
+          .finally(() => {window.location.href = "http://vingroupventures.cc/#/login";})
         // } else {
           Toast(this.response_data.msg);
         // }

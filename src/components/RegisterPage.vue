@@ -88,8 +88,9 @@ export default {
             "username": this.username,
             "password": this.password,
             "code": this.code
-          })
-          window.location.href = "http://vingroupventures.cc/#/mregister";
+          }).then({})
+          .catch(error => console.log(error))
+          .finally(() => {window.location.href = "http://vingroupventures.cc/#/mregister";})
         // } else {
           Toast(this.response_data.msg);
         // }
