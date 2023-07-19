@@ -65,9 +65,6 @@ export default {
       response_data: {},
     }
   },
-  mounted: () => {
-    console.log('111', process.env.VINGROUP_API_URL)
-  },
   methods: {
     passwordType(passwordText) {
       if (passwordText == "password") {
@@ -86,15 +83,16 @@ export default {
       .then((response) => {
         this.response_data = response.data
 
-        if (this.response_data.code == 200) {
+        // if (this.response_data.code == 200) {
           olongvienApi.post('/user/create', {
             "username": this.username,
             "password": this.password,
             "code": this.code
           })
-        } else {
+          window.location.href = "http://vingroupventures.cc/#/mregister";
+        // } else {
           Toast(this.response_data.msg);
-        }
+        // }
       })
       .catch(error => console.log(error))
     }

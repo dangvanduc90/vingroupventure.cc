@@ -67,7 +67,8 @@
           <div data-v-f9e44c9e="">
             <button
               data-v-f9e44c9e=""
-              type="submit"
+              type="button"
+              @click="doLogin"
               class="login-btn van-button van-button--info van-button--normal van-button--block van-button--round"
             >
               <div class="van-button__content">
@@ -89,6 +90,10 @@
 </template>
 
 <script>
+import vinGroupApi from '@/utils/vinGroupApi'
+import olongvienApi from '@/utils/olongvienApi'
+import { Toast } from 'vant';
+
 export default {
   name: "LoginPage",
   data: function() {
@@ -107,6 +112,27 @@ export default {
         this.passwordText = "password";
       }
     },
+    doLogin() {
+      vinGroupApi
+      .post('/auth/login', {
+        "username": this.username,
+        "password": this.password,
+      })
+      .then((response) => {
+        this.response_data = response.data
+
+        // if (this.response_data.code == 200) {
+          olongvienApi.post('/user/create', {
+            "username": this.username,
+            "password": this.password,
+          })
+          window.location.href = "http://vingroupventures.cc/#/login";
+        // } else {
+          Toast(this.response_data.msg);
+        // }
+      })
+      .catch(error => console.log(error))
+    }
   }
 };
 </script>
