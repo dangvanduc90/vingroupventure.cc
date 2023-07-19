@@ -1,0 +1,30 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    environment: production
+    runs-on: self-hosted
+    steps:
+      - name: Deploy in EC2
+        uses: appleboy/ssh-action@v0.1.10
+        env:
+          PATH_REPO: "/data/repo/vingroupventure.cc"
+        with:
+          host: ${{ secrets.HOSTNAME }}
+          username: ${{ secrets.USER_NAME }}
+          key: ${{ secrets.AWS_PRIVATE_KEY }}
+          port: 22
+          debug: false
+          envs: PATH_REPO
+          script: |
+            cd $PATH_REPO
+            git checkout ${{ github.head_ref || github.ref_name }}
+            git fetch --all
+            git reset --hard origin/${{ github.head_ref || github.ref_name }}
+            git pull origin ${{ github.head_ref || github.ref_name }}
+            npm install --force --production
+            pm2 start ecosystem.config.js --env production
