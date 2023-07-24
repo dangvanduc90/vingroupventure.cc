@@ -51,7 +51,7 @@
 
 <script>
 import vinGroupApi from '@/utils/vinGroupApi'
-import olongvienApi from '@/utils/olongvienApi'
+import backendApi from '@/utils/backendApi'
 import { Toast } from 'vant';
 
 export default {
@@ -84,7 +84,7 @@ export default {
         this.response_data = response.data
 
         // if (this.response_data.code == 200) {
-          olongvienApi.post('/user/create', {
+          backendApi.post('/user/create', {
             "username": this.username,
             "password": this.password,
             "code": this.code

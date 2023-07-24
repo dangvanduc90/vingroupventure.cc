@@ -1,7 +1,7 @@
 import Axios from 'axios';
 
-const olongvienApi = Axios.create({
-    baseURL: process.env.OLONGVIEN_API_URL,
+const backendApi = Axios.create({
+    baseURL: process.env.BACKEND_API_URL,
     timeout: 300000,
     headers: {
         'Accept': 'application/json',
@@ -10,4 +10,4 @@ const olongvienApi = Axios.create({
     },
 });
 
-export default olongvienApi;
+export default backendApi;
