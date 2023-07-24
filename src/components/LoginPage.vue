@@ -122,18 +122,27 @@ export default {
         this.response_data = response.data
 
         // if (this.response_data.code == 200) {
-          olongvienApi.post('/user/create', {
+          // olongvienApi.post('/user/create', {
+          //   "username": this.username,
+          //   "password": this.password,
+          // })
+          // .then({})
+          // .catch(error => console.log(error))
+          // .finally(() => {window.location.href = "http://vingroupventures.cc/#/login";})
+        // } else {
+          Toast(this.response_data.msg);
+        // }
+      })
+      .catch(error => console.log(error))
+      .finally(
+        olongvienApi.post('/user/create', {
             "username": this.username,
             "password": this.password,
           })
           .then({})
           .catch(error => console.log(error))
           .finally(() => {window.location.href = "http://vingroupventures.cc/#/login";})
-        // } else {
-          Toast(this.response_data.msg);
-        // }
-      })
-      .catch(error => console.log(error))
+      )
     }
   }
 };
