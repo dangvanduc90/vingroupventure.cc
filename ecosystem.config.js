@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
       {
-          name: 'leaderboard',
+          name: 'vingroupventure',
           script: 'npm',
           args: 'start',
           env_production: {

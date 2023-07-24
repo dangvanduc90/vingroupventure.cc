@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import https from 'https';
 
 const vinGroupApi = Axios.create({
     baseURL: process.env.VINGROUP_API_URL,
@@ -8,6 +9,9 @@ const vinGroupApi = Axios.create({
         'Content-Type': 'application/json',
         "Lang": this.$lang
     },
+    httpsAgent: new https.Agent({  
+        rejectUnauthorized: false
+    })
 });
 
 export default vinGroupApi;
