@@ -10,6 +10,7 @@ env:
 
 jobs:
   deploy-docker:
+    environment: production
     runs-on: self-hosted
 
     steps:
