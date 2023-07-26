@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
-  DOCKER_IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
+  DOCKER_IMAGE: ghcr.io/${{ github.repository }}
   PATH_COMPOSER: /tmp/vingroupventure.cc
   
 jobs:
@@ -40,7 +40,8 @@ jobs:
           context: .
           file: Dockerfile
           push: ${{ github.ref_type == 'tag' }}
-          tags: ${{ github.sha }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
   pull:
     environment: production
     runs-on: self-hosted
