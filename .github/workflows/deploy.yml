@@ -20,14 +20,14 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.DOCKER_IMAGE }}
-          flavor: latest=false
+          flavor: latest=true
           tags: |
-            # dynamically set the branch name as a prefix
-            type=sha,prefix=
-            # dynamically set the branch name and sha as a custom tag
-            type=raw,value={{sha}}
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{sha}}
 
       - name: Login to image repository
+        if: github.ref_type == 'tag'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -39,6 +39,7 @@ jobs:
         with:
           context: .
           file: Dockerfile
+          push: ${{ github.ref_type == 'tag' }}
           tags: ${{ github.sha }}
   pull:
     environment: production
