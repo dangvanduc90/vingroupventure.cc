@@ -7,7 +7,7 @@ on:
 env:
   DOCKER_IMAGE: ${{ github.repository }}
   PATH_COMPOSER: /tmp/vingroupventure.cc
-  
+
 jobs:
   deploy-docker:
     runs-on: self-hosted
@@ -19,12 +19,12 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.DOCKER_IMAGE }}
+          images: ghcr.io/dangvanduc90/vingroupventure.cc
           flavor: latest=true
           tags: |
             type=ref,event=branch
             type=ref,event=pr
-            type=semver,pattern={{sha}}
+            type=semver,pattern={{version}}
 
       - name: Login to image repository
         if: github.ref_type == 'tag'
@@ -42,28 +42,3 @@ jobs:
           push: ${{ github.ref_type == 'tag' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-  pull:
-    environment: production
-    runs-on: self-hosted
-    steps:
-      - name: Pull and run
-        uses: appleboy/ssh-action@v0.1.10
-        env:
-          PATH_REPO: "/data/repo/vingroupventure.cc"
-        with:
-          host: ${{ secrets.HOSTNAME }}
-          username: ${{ secrets.USER_NAME }}
-          key: ${{ secrets.AWS_PRIVATE_KEY }}
-          port: 22
-          debug: false
-          envs: PATH_REPO
-          script: |
-            cd $PATH_REPO
-            git checkout ${{ github.head_ref || github.ref_name }}
-            git fetch --all
-            git reset --hard origin/${{ github.head_ref || github.ref_name }}
-            git pull origin ${{ github.head_ref || github.ref_name }}
-            cp docker-compose/docker-compose-prod.yml ${{ env.PATH_COMPOSER }}/docker-compose.yml
-            sed -i "s~IMAGE_TAG~${{ env.DOCKER_IMAGE }}~g" ${{ env.PATH_COMPOSER }}/docker-compose.yml
-            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            cd ${{ env.PATH_COMPOSER }} && docker compose up -d
