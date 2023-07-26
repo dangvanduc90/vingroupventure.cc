@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
-  DOCKER_IMAGE: ${{ github.repository }}
+  DOCKER_IMAGE: ${{ github.event.repository.name }}
   PATH_COMPOSER: /tmp/vingroupventure.cc
 
 jobs:
