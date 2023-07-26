@@ -20,11 +20,12 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.DOCKER_IMAGE }}
-          flavor: latest=true
+          flavor: latest=false
           tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=sha
+            # dynamically set the branch name as a prefix
+            type=sha,prefix={{branch}}-
+            # dynamically set the branch name and sha as a custom tag
+            type=raw,value=mytag-{{branch}}-{{sha}}
 
       - name: Login to image repository
         if: github.ref_type == 'tag'
