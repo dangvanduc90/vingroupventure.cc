@@ -5,6 +5,6 @@ services:
     image: IMAGE_TAG
     restart: always
     ports:
-      - '3006:3000'
+      - '3006:80'
     volumes:
       - './logs:/var/log/nginx'
