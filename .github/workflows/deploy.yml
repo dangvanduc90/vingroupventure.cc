@@ -9,7 +9,7 @@ env:
   PATH_COMPOSER: /tmp/vingroupventure.cc
   
 jobs:
-  deploy-docker-hello-world:
+  deploy-docker:
     runs-on: self-hosted
 
     steps:
@@ -23,11 +23,7 @@ jobs:
           flavor: latest=false
           tags: |
             type=edge,
-            enable=true,
-            priority=700,
-            prefix=,
-            suffix=,
-            branch=$repo.default_branch
+            branch=${{ github.head_ref || github.ref_name }}
 
       - name: Login to image repository
         if: github.ref_type == 'tag'
