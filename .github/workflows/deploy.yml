@@ -51,5 +51,5 @@ jobs:
             git pull origin ${{ github.head_ref || github.ref_name }}
             cp docker-compose/docker-compose-prod.yml ${{ env.PATH_COMPOSER }}/docker-compose.yml
             sed -i "s~IMAGE_TAG~${{ steps.docker.outputs.imageFullName }}:${{ github.run_id }}~g" ${{ env.PATH_COMPOSER }}/docker-compose.yml
-            echo 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 | docker login ghcr.io -u dangvanduc90 --password-stdin
+            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             cd ${{ env.PATH_COMPOSER }} && docker compose up -d
