@@ -22,7 +22,6 @@ jobs:
           images: ${{ env.DOCKER_IMAGE }}
 
       - name: Login to image repository
-        if: github.ref_type == 'tag'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -34,7 +33,6 @@ jobs:
         with:
           context: .
           file: Dockerfile
-          push: ${{ github.ref_type == 'tag' }}
   
   pull:
     environment: production
@@ -59,5 +57,5 @@ jobs:
             git pull origin ${{ github.head_ref || github.ref_name }}
             cp docker-compose/docker-compose-prod.yml ${{ env.PATH_COMPOSER }}/docker-compose.yml
             sed -i "s~IMAGE_TAG~${{ env.DOCKER_IMAGE }}~g" ${{ env.PATH_COMPOSER }}/docker-compose.yml
-            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo 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 | docker login ghcr.io -u dangvanduc90 --password-stdin
             cd ${{ env.PATH_COMPOSER }} && docker compose up -d
