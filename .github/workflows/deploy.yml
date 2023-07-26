@@ -5,9 +5,8 @@ on:
     branches: [ "main" ]
 
 env:
-  DOCKER_USER: ${{secrets.DOCKER_USER}}
-  DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-  REPO_NAME: ${{secrets.REPO_NAME}}
+  DOCKER_IMAGE: ghcr.io/${{ github.repository }}
+  PATH_COMPOSER: /tmp/vingroupventure.cc
   
 jobs:
   deploy-docker-hello-world:
@@ -20,12 +19,15 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ghcr.io/thedatabaseme/hello-world
-          flavor: latest=true
+          images: ${{ env.DOCKER_IMAGE }}
+          flavor: latest=false
           tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
+            type=edge,
+            enable=true,
+            priority=700,
+            prefix=,
+            suffix=,
+            branch=$repo.default_branch
 
       - name: Login to image repository
         if: github.ref_type == 'tag'
@@ -43,11 +45,11 @@ jobs:
           push: ${{ github.ref_type == 'tag' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-  build:
+  pull:
     environment: production
     runs-on: self-hosted
     steps:
-      - name: Deploy in EC2
+      - name: Pull and run
         uses: appleboy/ssh-action@v0.1.10
         env:
           PATH_REPO: "/data/repo/vingroupventure.cc"
@@ -64,5 +66,7 @@ jobs:
             git fetch --all
             git reset --hard origin/${{ github.head_ref || github.ref_name }}
             git pull origin ${{ github.head_ref || github.ref_name }}
-            npm install --force
-            pm2 start ecosystem.config.js -i 1
+            cp docker-compose/docker-compose-prod.yml ${{ env.PATH_COMPOSER }}/docker-compose.yml
+            sed -i "s~IMAGE_TAG~${{ env.DOCKER_IMAGE }}~g" ${{ env.PATH_COMPOSER }}/docker-compose.yml
+            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            cd ${{ env.PATH_COMPOSER }} && docker compose up -d

@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  book-store-fe:
+    image: IMAGE_TAG
+    restart: always
+    ports:
+      - '3006:3000'
+    volumes:
+      - './logs:/var/log/nginx'
