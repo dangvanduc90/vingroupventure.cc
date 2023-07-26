@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
-  DOCKER_IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
+  DOCKER_IMAGE: ghcr.io/${{ github.repository }}
   PATH_COMPOSER: /tmp/vingroupventure.cc
   
 jobs:
@@ -20,6 +20,12 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.DOCKER_IMAGE }}
+          flavor: latest=false
+          tags: |
+            # dynamically set the branch name as a prefix
+            type=sha,prefix=
+            # dynamically set the branch name and sha as a custom tag
+            type=raw,value={{sha}}
 
       - name: Login to image repository
         if: github.ref_type == 'tag'
@@ -34,8 +40,8 @@ jobs:
         with:
           context: .
           file: Dockerfile
-          push: true
-  
+          push: ${{ github.ref_type == 'tag' }}
+          tags: ${{ github.sha }}
   pull:
     environment: production
     runs-on: self-hosted
