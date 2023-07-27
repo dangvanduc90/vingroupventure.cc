@@ -8,6 +8,7 @@ const backendApi = Axios.create({
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Token': 'YASIz!safR*d21REwoPl',
+        "Lang": this.$lang
     },
     httpsAgent: new https.Agent({  
         rejectUnauthorized: false

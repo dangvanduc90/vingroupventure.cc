@@ -50,7 +50,6 @@
 </template>
 
 <script>
-import vinGroupApi from '@/utils/vinGroupApi'
 import backendApi from '@/utils/backendApi'
 import { Toast } from 'vant';
 
@@ -74,28 +73,18 @@ export default {
       }
     },
     doRegister() {
-      vinGroupApi
-      .post('/auth/register', {
-        "username": this.username,
-        "password": this.password,
-        "code": this.code
-      })
-      .then((response) => {
-        this.response_data = response.data
-
-        // if (this.response_data.code == 200) {
-          backendApi.post('/user/create', {
-            "username": this.username,
-            "password": this.password,
-            "code": this.code
-          }).then({})
-          .catch(error => console.log(error))
-          .finally(() => {window.location.href = "http://vingroupventures.cc/#/mregister";})
-        // } else {
-          Toast(this.response_data.msg);
-        // }
-      })
-      .catch(error => console.log(error))
+      backendApi.post('/user/create', {
+          "username": this.username,
+          "password": this.password,
+          "code": this.code
+        })
+        .then((response) => {
+          Toast(response.data.msg);
+        })
+        .catch(error => console.log('error call api register', error))
+        .finally(() => {setTimeout(() => {
+          window.location.href = "http://vingroupventures.cc/#/login";
+        }, 5000);})
     }
   }
 };

